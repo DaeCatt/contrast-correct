@@ -37,6 +37,9 @@ console.log(
 [Examples with the included hex color helper](./example.js).
 
 # Gotchas
+Contrast Correct uses many modern JavaScript features - including object
+destructuring. Contrast Correct should be transpiled before serving on the web.
+
 Contrast Correct uses a slightly modified HSL color space in order to create
 colors that are reasonably similar to the original color even when extreme
 changes are necessary.
