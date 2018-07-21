@@ -5,5 +5,11 @@
 	"main": "index.js",
 	"author": "Tomas Heie",
 	"license": "ISC",
-	"repository": "github:DaxterSpeed/contrast-correct"
+	"repository": "github:DaxterSpeed/contrast-correct",
+	"keywords": [
+		"color",
+		"contrast",
+		"contrast-ratio",
+		"wcag21"
+	]
 }
