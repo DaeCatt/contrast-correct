@@ -1,7 +1,7 @@
 {
 	"name": "contrast-correct",
-	"version": "1.0.0",
-	"description": "Contrast Correct takes a static background color and a dynamic color and returns a modified version of the dynamic color that has had its contrast increased to be readable on the provided background color according to WCAG 2.1.",
+	"version": "1.1.0",
+	"description": "Contrast Correct allows you to take arbitrary colors and modify them to be increase their contrast against any background.",
 	"main": "index.js",
 	"author": "Tomas Heie",
 	"license": "ISC",

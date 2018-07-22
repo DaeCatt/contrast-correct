@@ -1,57 +1,46 @@
 # Contrast Correct
-Contrast Correct takes a static background color and a dynamic color and returns a modified version of the dynamic color that has had its contrast increased to be readable on the provided background color according to [WCAG 2.1](https://www.w3.org/TR/WCAG21/#contrast-minimum).
+Contrast Correct allows you to take arbitrary colors and modify them to be
+increase their contrast against any background.
 
-# Installation
-```sh
-yarn add contrast-correct
-```
+Color contrast is determined by the algorithm specified in [WCAG 2.1](https://www.w3.org/TR/WCAG21/#contrast-minimum) and as such processed colors
+will be readable even for users with color blindness.
 
 # Usage
-Contrast Correct operates on the following concepts:
-* `{r, g, b}` objects that represent each color channel as a number in the range [0, 1].
-* Relative luminance values represented as a number in the range [0, 1].
-* WCAG 2.1 contrast ratios represented as a number in the range [1, 21].
-
 ```javascript
-const { correctContrast, relativeLuminance } = require("contrast-correct");
+/**
+ * Load Contrast Correct with the provided hex string color helpers. This makes
+ * Contrast Correct accept and return hex string colors (such as "#000").
+ */
+const { correctContrast, relativeLuminance } = require("contrast-correct/hex");
 
-// Our target contrast. 7.0 is recommended for general text.
-const CONTRAST = 7;
+// The color of the background for our text.
+const background = "#0e0c13";
 
-// Calculate the relative luminance of the background we intend to place this color on.
-// The relative luminance is equivalent to the Y in the XYZ color space.
-// #000 has the relative luminance of 0.0 and #fff has the relative luminance of 1.0.
-const BGY = relativeLuminance({ r: 0x0e / 255, g: 0x0c / 255, b: 0x13 / 255 });
-
-// Get our corrected color object.
-const { r, g, b } = correctContrast({ r: 0, g: 0, b: 0x30 }, BGY, CONTRAST);
-
-// Display the result as a nice hex color string. In this case #002fd0.
-console.log(
-	`#${(((r * 255) << 16) | ((g * 255) << 8) | (b * 255))
-		.toString(16)
-		.padStart(6, "0")}`
+// Calculating the corrected color.
+let usernameColor = "#003";
+let newUsernameColor = correctContrast(
+	// Color to correct
+	usernameColor,
+	// Relative luminance of the text background (can and should be pre-calculated)
+	relativeLuminance(background),
+	// Target contrast ratio. 7.0 is recommended for text by WCAG 2.1.
+	7.0
 );
+
+// Log the modified color. In this case "#002fd0".
+console.log(newUsernameColor);
 ```
 
-[Examples with the included hex color helper](./example.js).
+# Tips
+If you already have your own methods for converting hex color strings to
+individual channels you can instead load `contrast-correct` and it will instead
+accept and return objects in the form
+`{ r: 0.0 to 1.0, g: 0.0 to 1.0, b: 0.0 to 1.0 }`.
 
-# Gotchas
-Contrast Correct uses many modern JavaScript features - including object
-destructuring. Contrast Correct should be transpiled before serving on the web.
-
-Contrast Correct uses a slightly modified HSL color space in order to create
-colors that are reasonably similar to the original color even when extreme
-changes are necessary.
-
-Not all contrast ratios are possible on all background colors. A contrast ratio
-of `1.0` would mean the colors are identical (though correctContrast never
-attempts to lower the contrast ratio if the desired contrast ratio has already
-been achieved). A contrast ratio of `21.0` is only possible for a combination
-of white and black. The highest contrast ratio that's always possible to
-generate a proper result is around `4.58`. If a higher contrast is requested
-but not possible Contrast Correct will return the closest possible color (which
-by necessity will always be either black or white).
+WCAG 2.1 contrast ratios have a few gotchas. For any background it's always
+possible to generate a color with a contrast of around `4.58`, but high
+contrast ratious (around 9+) are only possible on very dark or very bright
+backgrounds.
 
 # License
 **The ISC License (ISC).**
